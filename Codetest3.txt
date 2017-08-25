@@ -1,0 +1,50 @@
+@model ProScheduler.WebUI.Models.TimeWeb.PublishedShifts
+
+<script type="text/javascript" charset="utf-8">
+
+    //@@ sourceURL=dsPublishedShifts.js
+
+    var PublishedShifts = {};
+
+    PublishedShifts.rows = [];
+
+    /////////////////////////////////////////////////////////////////////////
+    // Fetch Result
+    /////////////////////////////////////////////////////////////////////////
+    function GetResult() {
+        try {
+            var url = "@Url.Action("GetPublishedShifts")";
+            var data = PublishedShifts.Filter.getFilterValues();
+
+            var fxDone = function (data) {
+                PublishedShifts.Result = data.result;
+                FillScheduleTable(data);
+            }
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                success: fxDone,
+                error: DisplayAjaxError
+            });
+
+            var url = "@Url.Action("SavePublishedShiftsFilter")";
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data
+            });
+
+            return true;
+        }
+        catch (ex) {
+            alert(ex.message);
+        }
+
+        return false;
+    }
+
+    function onFilterShow(id, bShow) {
+        return true;
+    }
